@@ -5,13 +5,19 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>Gaddam Jagadish Portfolio</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
+<head>
+	<script src="https://www.google.com/recaptcha/api.js"></script>
+	<script>
+		function onSubmit() {
+            document.getElementById("contact-form").submit()
+		}
+	</script>
+	<title>Gaddam Jagadish Portfolio</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
 	<body class="is-preload">
 
 		<!-- Wrapper -->
@@ -142,126 +148,30 @@
 				<article id="contact">
 					<h2 class="major">Contact</h2>
 
-					<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST" novalidate>
+					<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST">
 						<div class="fields">
 							<div class="field half">
-								<label for="name">Name <span aria-label="required">*</span></label>
-								<input type="text" name="name" id="name" required />
+								<label for="name">Name</label>
+								<input type="text" name="name" required />
 							</div>
-
 							<div class="field half">
-								<label for="email">Email <span aria-label="required">*</span></label>
-								<input type="email" name="email" id="email" required />
-								<div class="field-error" id="email-error"></div>
+								<label for="email">Email</label>
+								<input type="email" name="email" required />
 							</div>
 
 							<div class="field">
-								<label for="message">Message <span aria-label="required">*</span></label>
-								<textarea name="message" id="message" rows="4" required></textarea>
+								<label for="message">Message</label>
+								<textarea name="message" rows="4" required></textarea>
 							</div>
-
-							<!-- reCAPTCHA token will be injected here -->
-							<input type="hidden" name="g-recaptcha-response" id="6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU" />
-
-							<!-- Formspree AJAX secret key -->
-							<input type="hidden" name="_secret" value="6LfM9_ErAAAAAJ7OIbvf2LBuT9ROehSO9cNBtpJd" />
 						</div>
-
 						<ul class="actions">
-							<li><input type="submit" value="Send Message" class="primary" /></li>
+							<li> <button class="g-recaptcha primary" data-sitekey="6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU" data-callback="onSubmit" data-action="submit"> Send Message</button></li>
 							<li><input type="reset" value="Reset" /></li>
 						</ul>
 					</form>
-
-					<div id="form-result" role="alert" style="display:none;"></div>
-
-					<!-- Load reCAPTCHA v3 (replace with your site key) -->
-					<script src="https://www.google.com/recaptcha/api.js?render=6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU"></script>
-
-					<script>
-						const form = document.getElementById('contact-form');
-						const result = document.getElementById('form-result');
-						const emailInput = document.getElementById('email');
-						const emailErr = document.getElementById('email-error');
-						const submitBtn = form.querySelector('input[type="submit"]');
-						const tokenField = document.getElementById('recaptcha-token');
-
-						const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-						// === Site Key (public) ===
-						const SITE_KEY = '6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU';
-
-						// === Email validation UI ===
-						const setEmailError = msg => {
-							emailErr.textContent = msg;
-							emailErr.style.display = 'block';
-							emailInput.setAttribute('aria-invalid', 'true');
-						};
-						const clearEmailError = () => {
-							emailErr.textContent = '';
-							emailErr.style.display = 'none';
-							emailInput.removeAttribute('aria-invalid');
-						};
-
-						emailInput.addEventListener('input', () => {
-							if (!emailInput.value) return clearEmailError();
-							emailRegex.test(emailInput.value) ? clearEmailError() : setEmailError('Invalid e-mail');
-						});
-
-						// === Submit with reCAPTCHA token ===
-						form.addEventListener('submit', async e => {
-							e.preventDefault();
-							clearEmailError();
-							result.style.display = 'none';
-
-							if (!emailRegex.test(emailInput.value.trim())) {
-								setEmailError('Please enter a valid e-mail address.');
-								return;
-							}
-
-							submitBtn.disabled = true;
-							result.textContent = 'Verifying CAPTCHA...';
-							result.style.color = '#3498db';
-							result.style.display = 'block';
-
-							try {
-								// === Get reCAPTCHA v3 token ===
-								const token = await grecaptcha.execute(SITE_KEY, { action: 'submit_contact' });
-								tokenField.value = token;
-
-								// === Send to Formspree ===
-								const resp = await fetch(form.action, {
-									method: 'POST',
-									body: new FormData(form),
-									headers: { 'Accept': 'application/json' }
-								});
-
-								const data = await resp.json();
-
-								if (resp.ok) {
-									result.style.color = '#2ecc71';
-									result.textContent = 'Thank you! Your message was sent.';
-									form.reset();
-								} else {
-									const msg = data.error || 'Submission failed';
-									result.style.color = '#e74c3c';
-									result.textContent = msg;
-									if (msg.toLowerCase().includes('email')) setEmailError(msg);
-								}
-							} catch (err) {
-								console.error('Submission failed:', err);
-								result.style.color = '#e74c3c';
-								result.textContent = 'Network error – try again later.';
-							} finally {
-								submitBtn.disabled = false;
-								setTimeout(() => result.style.display = 'none', 6000);
-							}
-						});
-					</script>
-
 					<ul class="icons">
-						<li><a href="https://ac3connor.itch.io/" class="icon brands fa-itch-io">    <span class="label">Itch.io</span></a></li>
-						<li><a href="https://www.linkedin.com/in/jagadish-gaddam" class="icon brands fa-linkedin">    <span class="label">LinkedIn</span></a></li>
+						<li><a href="https://ac3connor.itch.io/" class="icon brands fa-itch-io"> <span class="label">Itch.io</span></a></li>
+						<li><a href="https://www.linkedin.com/in/jagadish-gaddam" class="icon brands fa-linkedin"> <span class="label">LinkedIn</span></a></li>
 					</ul>
 				</article>
 
