@@ -6,237 +6,193 @@
 -->
 <html>
 <head>
-	<script src="https://www.google.com/recaptcha/api.js"></script>
-
-	<script>
-		async function isDisposableEmail(email) {
-			try {
-				const response = await fetch(`https://api.mailcheck.ai/email/${encodeURIComponent(email)}`);
-				const data = await response.json();
-				return data.disposable; // true if it's a temporary email
-			} catch (err) {
-				console.error('Email check failed:', err);
-				return false; // fail-safe: treat as non-temp if API unavailable
-			}
-		}
-
-		async function validateForm(event) {
-			event.preventDefault();
-
-			const emailInput = document.getElementById('email');
-			const email = emailInput.value.trim();
-
-			// Step 1: Basic format check
-			const re = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-			if (!re.test(email)) {
-				alert('Please enter a valid email address.');
-				emailInput.focus();
-				return false;
-			}
-
-			// Step 2: Check if disposable via Mailcheck API
-			const isTemp = await isDisposableEmail(email);
-			if (isTemp) {
-				alert('Temporary or disposable email addresses are not allowed.');
-				emailInput.focus();
-				return false;
-			}
-
-			// Step 3: If valid, trigger reCAPTCHA
-			grecaptcha.execute();
-			return true;
-		}
-
-		function onSubmit(token) {
-			document.getElementById('contact-form').submit();
-		}
-	</script>
-
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<script src="assets/js/email.js" defer></script>
 	<title>Gaddam Jagadish Portfolio</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="assets/css/main.css" />
 	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 </head>
-	<body class="is-preload">
+<body class="is-preload">
 
-		<!-- Wrapper -->
-		<div id="wrapper">
+	<!-- Wrapper -->
+	<div id="wrapper">
 
-			<!-- Header -->
-			<header id="header">
-				<div class="logo">
-					<span class="icon fa-gem"></span>
+		<!-- Header -->
+		<header id="header">
+			<div class="logo">
+				<span class="icon fa-gem"></span>
+			</div>
+			<div class="content">
+				<div class="inner">
+					<h1>Welcome</h1>
+					<p>Hi, I’m Gaddam Jagadish, a game developer and gaming enthusiast who loves creating, testing, and playing games.</p>
 				</div>
-				<div class="content">
-					<div class="inner">
-						<h1>Welcome</h1>
-						<p>Hi, I’m Gaddam Jagadish, a game developer and gaming enthusiast who loves creating, testing, and playing games.</p>
+			</div>
+			<nav>
+				<ul>
+					<li><a href="#profile">Profile</a></li>
+					<li><a href="#projects">Projects</a></li>
+					<li><a href="#resume">Resume</a></li>
+					<li><a href="#contact">Contact</a></li>
+					<!--<li><a href="#elements">Elements</a></li>-->
+				</ul>
+			</nav>
+		</header>
+
+		<!-- Main -->
+		<div id="main">
+
+			<!-- Profile -->
+			<article id="profile">
+				<h2 class="major">Bio</h2>
+				<p>I am Gaddam Jagadish, I am from Telangana. I am a game developer, pursuing M.SC in Game Development and Game Design from AAFT Noida. I am open for Unity Development, Game Testing and level Designer roles.</p>
+				<p>I am a game developer proficient in C#, Unity, Python, and C++, with hands-on experience using Git, Unity Version Control, DOTween, Cinemachine and ProBuilder. I am passionate about gameplay programming and writing clean and well-structured code.</p>
+				<p>Check out my <a href="#projects">projects</a> </p>
+			</article>
+
+			<!-- Projects -->
+			<article id="projects">
+				<h2 class="major">Projects</h2>
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/teddy" target="_blank">
+							<img src="images/teddy.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>Teddy is a first-person horror shooter where you play as a special operations agent sent to investigate a mysterious anomaly in an abandoned house. Your mission is simple to uncover the source of the anomaly and make it out alive.</p>
 					</div>
 				</div>
-				<nav>
-					<ul>
-						<li><a href="#profile">Profile</a></li>
-						<li><a href="#projects">Projects</a></li>
-						<li><a href="#resume">Resume</a></li>
-						<li><a href="#contact">Contact</a></li>
-						<!--<li><a href="#elements">Elements</a></li>-->
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/desert-runner" target="_blank">
+							<img src="images/desertRunner.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>Desert Runner is a casual 2D platformer set in a vast desert world. Run, jump, and climb obstacles as you explore sandy landscapes and collect hidden treasures.</p>
+					</div>
+				</div>
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/csi-simulator-fruit-mart-mystery" target="_blank">
+							<img src="images/csi.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>CSI Simulator - fruit mart mystery is a 3D isometric Investigative Mystery Game. You start at the murder scene located in the Fruit Mart, carefully examine the area for potential clues and identify the correct suspect and ensure justice is served.</p>
+					</div>
+				</div>
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/dune-rush" target="_blank">
+							<img src="images/duneRush.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>Dune Rush is a fast-paced 3D infinite runner where you play as Loria, running across endless desert dunes to escape from a strange, unstoppable bear. Avoid obstacles, collect golden coins and stay ahead in the chase. How far can you go before the beast catches you?</p>
+					</div>
+				</div>
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/island-bird-hunter" target="_blank">
+							<img src="images/birdHunt.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>Island Bird Hunter is a classic shooter inspired 2D Duck Hunt game. Aim and shoot at the birds flying across the screen to earn points, hit as many birds as possible before they escape. My first ever game made.</p>
+					</div>
+				</div>
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/wavebird" target="_blank">
+							<img src="images/wavebird.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>Wave Bird is a hyper casual game inspired by Flappy Bird. The goal is to keep flying as long as possible without crashing. Easy to play but hard to master. Try to get the highest score possible!</p>
+					</div>
+				</div>
+				<div class="project-container">
+					<div class="logo-container">
+						<a href="https://ac3connor.itch.io/pixel-invasion" target="_blank">
+							<img src="images/pixelInvasion.png" alt="itchlogo">
+						</a>
+					</div>
+					<div class="description-container">
+						<p>Pixel Invasion is a casual 2D Isometric puzzle Game.Your goal is to heal all the pixelated tiles and face the monster and catch it to restore the glory of vector art. With simple controls, it’s an easy-to-play yet addictive casual game.</p>
+					</div>
+				</div>
+				<p> Check out my <a href="#resume">resume</a></p>
+			</article>
+
+			<!-- Resume -->
+			<article id="resume">
+				<h2 class="major">Resume</h2>
+				<iframe src="images/Resume.pdf#toolbar=0&navpanes=0&scrollbar=0" title="connor's Resume"
+						class="pdf-container">
+				</iframe>
+				<p class="download-link">
+					<a href="images/Resume.pdf" download>Download Resume</a>
+				</p>
+				<p style="text-align: center;"> <a href="#contact">Contact me</a></p>
+			</article>
+
+			<!-- Contact -->
+			<article id="contact">
+				<h2 class="major">Contact</h2>
+
+				<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST" onsubmit="return validateForm(event)">
+					<div class="fields">
+						<div class="field half">
+							<label for="name">Name</label>
+							<input type="text" name="name" required />
+						</div>
+						<div class="field half">
+							<label for="email">Email</label>
+							<input type="email" name="email" required />
+						</div>
+
+						<div class="field">
+							<label for="message">Message</label>
+							<textarea name="message" rows="4" required></textarea>
+						</div>
+					</div>
+					<ul class="actions">
+						<li> <button class="g-recaptcha primary" data-sitekey="6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU" data-callback="onSubmit" data-action="submit"> Send Message</button></li>
+						<li><input type="reset" value="Reset" /></li>
 					</ul>
-				</nav>
-			</header>
+				</form>
+				<ul class="icons">
+					<li><a href="https://ac3connor.itch.io/" class="icon brands fa-itch-io"> <span class="label">Itch.io</span></a></li>
+					<li><a href="https://www.linkedin.com/in/jagadish-gaddam" class="icon brands fa-linkedin"> <span class="label">LinkedIn</span></a></li>
+				</ul>
+			</article>
 
-			<!-- Main -->
-			<div id="main">
+			<!-- Elements -->
+			<article id="elements">
+				<h2 class="major">Elements</h2>
 
-				<!-- Profile -->
-				<article id="profile">
-					<h2 class="major">Bio</h2>
-					<p>I am Gaddam Jagadish, I am from Telangana. I am a game developer, pursuing M.SC in Game Development and Game Design from AAFT Noida. I am open for Unity Development, Game Testing and level Designer roles.</p>
-					<p>I am a game developer proficient in C#, Unity, Python, and C++, with hands-on experience using Git, Unity Version Control, DOTween, Cinemachine and ProBuilder. I am passionate about gameplay programming and writing clean and well-structured code.</p>
-					<p>Check out my <a href="#projects">projects</a> </p>
-				</article>
-
-				<!-- Projects -->
-				<article id="projects">
-					<h2 class="major">Projects</h2>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/teddy" target="_blank">
-								<img src="images/teddy.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>Teddy is a first-person horror shooter where you play as a special operations agent sent to investigate a mysterious anomaly in an abandoned house. Your mission is simple to uncover the source of the anomaly and make it out alive.</p>
-						</div>
-					</div>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/desert-runner" target="_blank">
-								<img src="images/desertRunner.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>Desert Runner is a casual 2D platformer set in a vast desert world. Run, jump, and climb obstacles as you explore sandy landscapes and collect hidden treasures.</p>
-						</div>
-					</div>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/csi-simulator-fruit-mart-mystery" target="_blank">
-								<img src="images/csi.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>CSI Simulator - fruit mart mystery is a 3D isometric Investigative Mystery Game. You start at the murder scene located in the Fruit Mart, carefully examine the area for potential clues and identify the correct suspect and ensure justice is served.</p>
-						</div>
-					</div>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/dune-rush" target="_blank">
-								<img src="images/duneRush.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>Dune Rush is a fast-paced 3D infinite runner where you play as Loria, running across endless desert dunes to escape from a strange, unstoppable bear. Avoid obstacles, collect golden coins and stay ahead in the chase. How far can you go before the beast catches you?</p>
-						</div>
-					</div>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/island-bird-hunter" target="_blank">
-								<img src="images/birdHunt.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>Island Bird Hunter is a classic shooter inspired 2D Duck Hunt game. Aim and shoot at the birds flying across the screen to earn points, hit as many birds as possible before they escape. My first ever game made.</p>
-						</div>
-					</div>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/wavebird" target="_blank">
-								<img src="images/wavebird.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>Wave Bird is a hyper casual game inspired by Flappy Bird. The goal is to keep flying as long as possible without crashing. Easy to play but hard to master. Try to get the highest score possible!</p>
-						</div>
-					</div>
-					<div class="project-container">
-						<div class="logo-container">
-							<a href="https://ac3connor.itch.io/pixel-invasion" target="_blank">
-								<img src="images/pixelInvasion.png" alt="itchlogo">
-							</a>
-						</div>
-						<div class="description-container">
-							<p>Pixel Invasion is a casual 2D Isometric puzzle Game.Your goal is to heal all the pixelated tiles and face the monster and catch it to restore the glory of vector art. With simple controls, it’s an easy-to-play yet addictive casual game.</p>
-						</div>
-					</div>
-					<p> Check out my <a href="#resume">resume</a></p>
-				</article>
-
-				<!-- Resume -->
-				<article id="resume">
-					<h2 class="major">Resume</h2>
-					<iframe src="images/Resume.pdf#toolbar=0&navpanes=0&scrollbar=0" title="connor's Resume"
-							class="pdf-container">
-					</iframe>
-					<p class="download-link">
-						<a href="images/Resume.pdf" download>Download Resume</a>
+				<section>
+					<h3 class="major">Text</h3>
+					<p>
+						This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
+						This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
+						This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.
 					</p>
-					<p style="text-align: center;"> <a href="#contact">Contact me</a></p>
-				</article>
-
-				<!-- Contact -->
-				<article id="contact">
-					<h2 class="major">Contact</h2>
-
-					<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST" onsubmit= "return validateForm(event)" >
-						<div class="fields">
-							<div class="field half">
-								<label for="name">Name</label>
-								<input type="text" name="name" required />
-							</div>
-							<div class="field half">
-								<label for="email">Email</label>
-								<input type="email" name="email" required />
-							</div>
-
-							<div class="field">
-								<label for="message">Message</label>
-								<textarea name="message" rows="4" required></textarea>
-							</div>
-						</div>
-						<ul class="actions">
-							<li> <button class="g-recaptcha primary" data-sitekey="6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU" data-callback="onSubmit" data-action="submit"> Send Message</button></li>
-							<li><input type="reset" value="Reset" /></li>
-						</ul>
-					</form>
-					<ul class="icons">
-						<li><a href="https://ac3connor.itch.io/" class="icon brands fa-itch-io"> <span class="label">Itch.io</span></a></li>
-						<li><a href="https://www.linkedin.com/in/jagadish-gaddam" class="icon brands fa-linkedin"> <span class="label">LinkedIn</span></a></li>
-					</ul>
-				</article>
-
-				<!-- Elements -->
-				<article id="elements">
-					<h2 class="major">Elements</h2>
-
-					<section>
-						<h3 class="major">Text</h3>
-						<p>
-							This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
-							This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
-							This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.
-						</p>
-						<hr />
-						<h2>Heading Level 2</h2>
-						<h3>Heading Level 3</h3>
-						<h4>Heading Level 4</h4>
-						<h5>Heading Level 5</h5>
-						<h6>Heading Level 6</h6>
-						<hr />
-						<h4>Blockquote</h4>
-						<blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.</blockquote>
-						<h4>Preformatted</h4>
-						<pre><code>i = 0;
+					<hr />
+					<h2>Heading Level 2</h2>
+					<h3>Heading Level 3</h3>
+					<h4>Heading Level 4</h4>
+					<h5>Heading Level 5</h5>
+					<h6>Heading Level 6</h6>
+					<hr />
+					<h4>Blockquote</h4>
+					<blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.</blockquote>
+					<h4>Preformatted</h4>
+					<pre><code>i = 0;
 
 						while (!deck.isInOrder()) {
 							print 'Iteration ' + i;
@@ -245,238 +201,240 @@
 						}	
 
 						print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
-					</section>
+				</section>
 
-					<section>
-						<h3 class="major">Lists</h3>
+				<section>
+					<h3 class="major">Lists</h3>
 
-						<h4>Unordered</h4>
-						<ul>
-							<li>Dolor pulvinar etiam.</li>
-							<li>Sagittis adipiscing.</li>
-							<li>Felis enim feugiat.</li>
-						</ul>
+					<h4>Unordered</h4>
+					<ul>
+						<li>Dolor pulvinar etiam.</li>
+						<li>Sagittis adipiscing.</li>
+						<li>Felis enim feugiat.</li>
+					</ul>
 
-						<h4>Alternate</h4>
-						<ul class="alt">
-							<li>Dolor pulvinar etiam.</li>
-							<li>Sagittis adipiscing.</li>
-							<li>Felis enim feugiat.</li>
-						</ul>
+					<h4>Alternate</h4>
+					<ul class="alt">
+						<li>Dolor pulvinar etiam.</li>
+						<li>Sagittis adipiscing.</li>
+						<li>Felis enim feugiat.</li>
+					</ul>
 
-						<h4>Ordered</h4>
-						<ol>
-							<li>Dolor pulvinar etiam.</li>
-							<li>Etiam vel felis viverra.</li>
-							<li>Felis enim feugiat.</li>
-							<li>Dolor pulvinar etiam.</li>
-							<li>Etiam vel felis lorem.</li>
-							<li>Felis enim et feugiat.</li>
-						</ol>
-						<h4>Icons</h4>
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
-						</ul>
+					<h4>Ordered</h4>
+					<ol>
+						<li>Dolor pulvinar etiam.</li>
+						<li>Etiam vel felis viverra.</li>
+						<li>Felis enim feugiat.</li>
+						<li>Dolor pulvinar etiam.</li>
+						<li>Etiam vel felis lorem.</li>
+						<li>Felis enim et feugiat.</li>
+					</ol>
+					<h4>Icons</h4>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+					</ul>
 
-						<h4>Actions</h4>
-						<ul class="actions">
-							<li><a href="#" class="button primary">Default</a></li>
-							<li><a href="#" class="button">Default</a></li>
-						</ul>
-						<ul class="actions stacked">
-							<li><a href="#" class="button primary">Default</a></li>
-							<li><a href="#" class="button">Default</a></li>
-						</ul>
-					</section>
+					<h4>Actions</h4>
+					<ul class="actions">
+						<li><a href="#" class="button primary">Default</a></li>
+						<li><a href="#" class="button">Default</a></li>
+					</ul>
+					<ul class="actions stacked">
+						<li><a href="#" class="button primary">Default</a></li>
+						<li><a href="#" class="button">Default</a></li>
+					</ul>
+				</section>
 
-					<section>
-						<h3 class="major">Table</h3>
-						<h4>Default</h4>
-						<div class="table-wrapper">
-							<table>
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Description</th>
-										<th>Price</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Item One</td>
-										<td>Ante turpis integer aliquet porttitor.</td>
-										<td>29.99</td>
-									</tr>
-									<tr>
-										<td>Item Two</td>
-										<td>Vis ac commodo adipiscing arcu aliquet.</td>
-										<td>19.99</td>
-									</tr>
-									<tr>
-										<td>Item Three</td>
-										<td> Morbi faucibus arcu accumsan lorem.</td>
-										<td>29.99</td>
-									</tr>
-									<tr>
-										<td>Item Four</td>
-										<td>Vitae integer tempus condimentum.</td>
-										<td>19.99</td>
-									</tr>
-									<tr>
-										<td>Item Five</td>
-										<td>Ante turpis integer aliquet porttitor.</td>
-										<td>29.99</td>
-									</tr>
-								</tbody>
-								<tfoot>
-									<tr>
-										<td colspan="2"></td>
-										<td>100.00</td>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
+				<section>
+					<h3 class="major">Table</h3>
+					<h4>Default</h4>
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Description</th>
+									<th>Price</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Item One</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>29.99</td>
+								</tr>
+								<tr>
+									<td>Item Two</td>
+									<td>Vis ac commodo adipiscing arcu aliquet.</td>
+									<td>19.99</td>
+								</tr>
+								<tr>
+									<td>Item Three</td>
+									<td> Morbi faucibus arcu accumsan lorem.</td>
+									<td>29.99</td>
+								</tr>
+								<tr>
+									<td>Item Four</td>
+									<td>Vitae integer tempus condimentum.</td>
+									<td>19.99</td>
+								</tr>
+								<tr>
+									<td>Item Five</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>29.99</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="2"></td>
+									<td>100.00</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
 
-						<h4>Alternate</h4>
-						<div class="table-wrapper">
-							<table class="alt">
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Description</th>
-										<th>Price</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Item One</td>
-										<td>Ante turpis integer aliquet porttitor.</td>
-										<td>29.99</td>
-									</tr>
-									<tr>
-										<td>Item Two</td>
-										<td>Vis ac commodo adipiscing arcu aliquet.</td>
-										<td>19.99</td>
-									</tr>
-									<tr>
-										<td>Item Three</td>
-										<td> Morbi faucibus arcu accumsan lorem.</td>
-										<td>29.99</td>
-									</tr>
-									<tr>
-										<td>Item Four</td>
-										<td>Vitae integer tempus condimentum.</td>
-										<td>19.99</td>
-									</tr>
-									<tr>
-										<td>Item Five</td>
-										<td>Ante turpis integer aliquet porttitor.</td>
-										<td>29.99</td>
-									</tr>
-								</tbody>
-								<tfoot>
-									<tr>
-										<td colspan="2"></td>
-										<td>100.00</td>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
-					</section>
+					<h4>Alternate</h4>
+					<div class="table-wrapper">
+						<table class="alt">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Description</th>
+									<th>Price</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Item One</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>29.99</td>
+								</tr>
+								<tr>
+									<td>Item Two</td>
+									<td>Vis ac commodo adipiscing arcu aliquet.</td>
+									<td>19.99</td>
+								</tr>
+								<tr>
+									<td>Item Three</td>
+									<td> Morbi faucibus arcu accumsan lorem.</td>
+									<td>29.99</td>
+								</tr>
+								<tr>
+									<td>Item Four</td>
+									<td>Vitae integer tempus condimentum.</td>
+									<td>19.99</td>
+								</tr>
+								<tr>
+									<td>Item Five</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>29.99</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="2"></td>
+									<td>100.00</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</section>
 
-					<section>
-						<h3 class="major">Buttons</h3>
-						<ul class="actions">
-							<li><a href="#" class="button primary">Primary</a></li>
-							<li><a href="#" class="button">Default</a></li>
-						</ul>
-						<ul class="actions">
-							<li><a href="#" class="button">Default</a></li>
-							<li><a href="#" class="button small">Small</a></li>
-						</ul>
-						<ul class="actions">
-							<li><a href="#" class="button primary icon solid fa-download">Icon</a></li>
-							<li><a href="#" class="button icon solid fa-download">Icon</a></li>
-						</ul>
-						<ul class="actions">
-							<li><span class="button primary disabled">Disabled</span></li>
-							<li><span class="button disabled">Disabled</span></li>
-						</ul>
-					</section>
+				<section>
+					<h3 class="major">Buttons</h3>
+					<ul class="actions">
+						<li><a href="#" class="button primary">Primary</a></li>
+						<li><a href="#" class="button">Default</a></li>
+					</ul>
+					<ul class="actions">
+						<li><a href="#" class="button">Default</a></li>
+						<li><a href="#" class="button small">Small</a></li>
+					</ul>
+					<ul class="actions">
+						<li><a href="#" class="button primary icon solid fa-download">Icon</a></li>
+						<li><a href="#" class="button icon solid fa-download">Icon</a></li>
+					</ul>
+					<ul class="actions">
+						<li><span class="button primary disabled">Disabled</span></li>
+						<li><span class="button disabled">Disabled</span></li>
+					</ul>
+				</section>
 
-					<section>
-						<h3 class="major">Form</h3>
-						<form method="post" action="#">
-							<div class="fields">
-								<div class="field half">
-									<label for="demo-name">Name</label>
-									<input type="text" name="demo-name" id="demo-name" value="" placeholder="Jane Doe" />
-								</div>
-								<div class="field half">
-									<label for="demo-email">Email</label>
-									<input type="email" name="demo-email" id="demo-email" value="" placeholder="jane@untitled.tld" />
-								</div>
-								<div class="field">
-									<label for="demo-category">Category</label>
-									<select name="demo-category" id="demo-category">
-										<option value="">-</option>
-										<option value="1">Manufacturing</option>
-										<option value="1">Shipping</option>
-										<option value="1">Administration</option>
-										<option value="1">Human Resources</option>
-									</select>
-								</div>
-								<div class="field half">
-									<input type="radio" id="demo-priority-low" name="demo-priority" checked>
-									<label for="demo-priority-low">Low</label>
-								</div>
-								<div class="field half">
-									<input type="radio" id="demo-priority-high" name="demo-priority">
-									<label for="demo-priority-high">High</label>
-								</div>
-								<div class="field half">
-									<input type="checkbox" id="demo-copy" name="demo-copy">
-									<label for="demo-copy">Email me a copy</label>
-								</div>
-								<div class="field half">
-									<input type="checkbox" id="demo-human" name="demo-human" checked>
-									<label for="demo-human">Not a robot</label>
-								</div>
-								<div class="field">
-									<label for="demo-message">Message</label>
-									<textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
-								</div>
+				<section>
+					<h3 class="major">Form</h3>
+					<form method="post" action="#">
+						<div class="fields">
+							<div class="field half">
+								<label for="demo-name">Name</label>
+								<input type="text" name="demo-name" id="demo-name" value="" placeholder="Jane Doe" />
 							</div>
-							<ul class="actions">
-								<li><input type="submit" value="Send Message" class="primary" /></li>
-								<li><input type="reset" value="Reset" /></li>
-							</ul>
-						</form>
-					</section>
+							<div class="field half">
+								<label for="demo-email">Email</label>
+								<input type="email" name="demo-email" id="demo-email" value="" placeholder="jane@untitled.tld" />
+							</div>
+							<div class="field">
+								<label for="demo-category">Category</label>
+								<select name="demo-category" id="demo-category">
+									<option value="">-</option>
+									<option value="1">Manufacturing</option>
+									<option value="1">Shipping</option>
+									<option value="1">Administration</option>
+									<option value="1">Human Resources</option>
+								</select>
+							</div>
+							<div class="field half">
+								<input type="radio" id="demo-priority-low" name="demo-priority" checked>
+								<label for="demo-priority-low">Low</label>
+							</div>
+							<div class="field half">
+								<input type="radio" id="demo-priority-high" name="demo-priority">
+								<label for="demo-priority-high">High</label>
+							</div>
+							<div class="field half">
+								<input type="checkbox" id="demo-copy" name="demo-copy">
+								<label for="demo-copy">Email me a copy</label>
+							</div>
+							<div class="field half">
+								<input type="checkbox" id="demo-human" name="demo-human" checked>
+								<label for="demo-human">Not a robot</label>
+							</div>
+							<div class="field">
+								<label for="demo-message">Message</label>
+								<textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
+							</div>
+						</div>
+						<ul class="actions">
+							<li><input type="submit" value="Send Message" class="primary" /></li>
+							<li><input type="reset" value="Reset" /></li>
+						</ul>
+					</form>
+				</section>
 
-				</article>
+			</article>
 
-			</div>
+		</div>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<p class="copyright">&copy; Design by: <a href="https://html5up.net">HTML5 UP</a>.</p>
-					</footer>
+		<!-- Footer -->
+		<footer id="footer">
+			<p class="copyright">&copy; Design by: <a href="https://html5up.net">HTML5 UP</a>.</p>
+		</footer>
 
-			</div>
+	</div>
 
-		<!-- BG -->
-			<div id="bg"></div>
+	<!-- BG -->
+	<div id="bg"></div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<script src="assets/js/email.js" defer></script>
 
-	</body>
+</body>
 </html>
