@@ -168,81 +168,83 @@
 					</form>
 
 					<div id="form-result" role="alert" style="display:none;"></div>
+					
+					<script>
+						const form = document.getElementById('contact-form');
+						const result = document.getElementById('form-result');
+						const emailInput = document.getElementById('email');
+						const emailErr = document.getElementById('email-error');
+						const submitBtn = form.querySelector('input[type="submit"]');
 
-				<script>
-					const form = document.getElementById('contact-form');
-					const result = document.getElementById('form-result');
-					const emailInput = document.getElementById('email');
-					const emailErr = document.getElementById('email-error');
-					const submitBtn = form.querySelector('input[type="submit"]');
+						const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-					const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+						const setEmailError = msg => {
+							emailErr.textContent = msg;
+							emailErr.style.display = 'block';
+							emailInput.setAttribute('aria-invalid', 'true');
+						};
+						const clearEmailError = () => {
+							emailErr.textContent = '';
+							emailErr.style.display = 'none';
+							emailInput.removeAttribute('aria-invalid');
+						};
 
-					const setEmailError = msg => {
-						emailErr.textContent = msg;
-						emailErr.style.display = 'block';
-						emailInput.setAttribute('aria-invalid', 'true');
-					};
-					const clearEmailError = () => {
-						emailErr.textContent = '';
-						emailErr.style.display = 'none';
-						emailInput.removeAttribute('aria-invalid');
-					};
+						emailInput.addEventListener('input', () => {
+							if (!emailInput.value) return clearEmailError();
+							emailRegex.test(emailInput.value) ? clearEmailError() : setEmailError('Invalid e-mail');
+						});
 
-					// Quick client guard
-					emailInput.addEventListener('input', () => {
-						if (!emailInput.value) return clearEmailError();
-						emailRegex.test(emailInput.value) ? clearEmailError() : setEmailError('Invalid e-mail');
-					});
+						form.addEventListener('submit', async e => {
+							e.preventDefault();
+							clearEmailError();
+							result.style.display = 'none';
 
-					form.addEventListener('submit', async e => {
-						e.preventDefault();
-						clearEmailError();
-						result.style.display = 'none';
-
-						if (!emailRegex.test(emailInput.value.trim())) {
-							setEmailError('Please enter a valid e-mail address.');
-							return;
-						}
-
-						submitBtn.disabled = true;
-
-						try {
-							const resp = await fetch(form.action, {
-								method: 'POST',
-								body: new FormData(form),
-								headers: { 'Accept': 'application/json' }
-							});
-
-							const data = await resp.json();
-
-							if (resp.ok) {
-								result.style.color = '#2ecc71';
-								result.textContent = 'Thank you! Your message was sent.';
-								form.reset();
-							} else {
-								// Formspree backend error (invalid field, spam, etc.)
-								const msg = data.error || 'Unknown error';
-								result.style.color = '#e74c3c';
-								result.textContent = msg;
-								if (msg.toLowerCase().includes('email')) setEmailError(msg);
+							if (!emailRegex.test(emailInput.value.trim())) {
+								setEmailError('Please enter a valid e-mail address.');
+								return;
 							}
-						} catch (err) {
-							result.style.color = '#e74c3c';
-							result.textContent = 'Network error – try again later.';
-							console.error(err);
-						} finally {
-							result.style.display = 'block';
-							submitBtn.disabled = false;
-							setTimeout(() => result.style.display = 'none', 6000);
-						}
-					});
-				</script>
 
-				<ul class="icons">
-					<li><a href="https://ac3connor.itch.io/" class="icon brands fa-itch-io">    <span class="label">Itch.io</span></a></li>
-					<li><a href="https://www.linkedin.com/in/jagadish-gaddam" class="icon brands fa-linkedin">    <span class="label">LinkedIn</span></a></li>
-				</ul>
+							submitBtn.disabled = true;
+
+							try {
+								const resp = await fetch(form.action, {
+									method: 'POST',
+									body: new FormData(form),
+									headers: {
+										'Accept': 'application/json',
+										// Optional: you can also send the key as a header
+										'X-Formspree-Secret': '6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU'
+									}
+								});
+
+								const data = await resp.json();
+
+								if (resp.ok) {
+									result.style.color = '#2ecc71';
+									result.textContent = 'Thank you! Your message was sent.';
+									form.reset();
+								} else {
+									const msg = data.error || 'Unknown error';
+									result.style.color = '#e74c3c';
+									result.textContent = msg;
+									if (msg.toLowerCase().includes('email')) setEmailError(msg);
+								}
+							} catch (err) {
+								result.style.color = '#e74c3c';
+								result.textContent = 'Network error – try again later.';
+								console.error(err);
+							} finally {
+								result.style.display = 'block';
+								submitBtn.disabled = false;
+								setTimeout(() => result.style.display = 'none', 6000);
+							}
+						});
+					</script>
+
+					<ul class="icons">
+						<li><a href="https://ac3connor.itch.io/" class="icon brands fa-itch-io">    <span class="label">Itch.io</span></a></li>
+						<li><a href="https://www.linkedin.com/in/jagadish-gaddam" class="icon brands fa-linkedin">    <span class="label">LinkedIn</span></a></li>
+					</ul>
 				</article>
 
 				<!-- Elements -->
