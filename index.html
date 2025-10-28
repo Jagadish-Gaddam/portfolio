@@ -142,10 +142,7 @@
 				<article id="contact">
 					<h2 class="major">Contact</h2>
 
-					<form id="contact-form"
-						  action="https://formspree.io/f/movkzpee"
-						  method="POST"
-						  novalidate>
+					<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST" novalidate>
 						<div class="fields">
 							<div class="field half">
 								<label for="name">Name <span aria-label="required">*</span></label>
@@ -155,6 +152,7 @@
 							<div class="field half">
 								<label for="email">Email <span aria-label="required">*</span></label>
 								<input type="email" name="email" id="email" required />
+								<small class="error" id="email-error" style="display:none;">Please enter a valid e-mail address.</small>
 							</div>
 
 							<div class="field">
@@ -169,19 +167,49 @@
 						</ul>
 					</form>
 
-					<!-- Result Message -->
 					<div id="form-result" role="alert" style="display:none;"></div>
-				</article>
 
 				<script>
 					const form = document.getElementById('contact-form');
 					const result = document.getElementById('form-result');
+					const emailInput = document.getElementById('email');
+					const emailError = document.getElementById('email-error');
+					const submitBtn = form.querySelector('input[type="submit"]');
+
+					// Simple but robust e-mail regex (covers 99% of real addresses)
+					const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+					// Real-time validation (optional but nice UX)
+					emailInput.addEventListener('input', () => {
+						if (emailInput.validity.typeMismatch || !emailRegex.test(emailInput.value)) {
+							emailError.style.display = 'block';
+							emailInput.setAttribute('aria-invalid', 'true');
+						} else {
+							emailError.style.display = 'none';
+							emailInput.removeAttribute('aria-invalid');
+						}
+					});
 
 					form.addEventListener('submit', async function (e) {
 						e.preventDefault();
 
-						// Disable submit button while request is in flight
-						const submitBtn = form.querySelector('input[type="submit"]');
+						// ---- 1. Client-side checks ----
+						let hasError = false;
+
+						// Reset previous visual cues
+						emailError.style.display = 'none';
+						emailInput.removeAttribute('aria-invalid');
+
+						// Validate e-mail again (in case someone disables JS validation)
+						if (!emailRegex.test(emailInput.value.trim())) {
+							emailError.style.display = 'block';
+							emailInput.setAttribute('aria-invalid', 'true');
+							hasError = true;
+						}
+
+						if (hasError) return;   // stop submission
+
+						// ---- 2. Disable button & send ----
 						submitBtn.disabled = true;
 
 						try {
@@ -196,17 +224,19 @@
 								result.textContent = 'Thank you! Your message was sent.';
 								form.reset();
 							} else {
-								throw new Error('Server responded with ' + response.status);
+								// Formspree returns 400 for validation errors (e.g. spam)
+								const data = await response.json();
+								throw new Error(data.error || 'Server error');
 							}
 						} catch (err) {
 							result.style.color = '#e74c3c';
-							result.textContent = 'Oops! Something went wrong. Please try again.';
+							result.textContent = err.message.includes('spam')
+								? 'Message blocked as spam. Try again or contact me directly.'
+								: 'Oops! Something went wrong. Please try again.';
 							console.error(err);
 						} finally {
 							result.style.display = 'block';
 							submitBtn.disabled = false;
-
-							// Auto-hide after 5 seconds
 							setTimeout(() => { result.style.display = 'none'; }, 5000);
 						}
 					});
