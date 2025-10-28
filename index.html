@@ -144,6 +144,7 @@
 
 					<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST" novalidate>
 						<div class="fields">
+
 							<div class="field half">
 								<label for="name">Name <span aria-label="required">*</span></label>
 								<input type="text" name="name" id="name" required />
@@ -152,13 +153,14 @@
 							<div class="field half">
 								<label for="email">Email <span aria-label="required">*</span></label>
 								<input type="email" name="email" id="email" required />
-								<small class="error" id="email-error" style="display:none;">Please enter a valid e-mail address.</small>
+								<div class="field-error" id="email-error"></div>
 							</div>
 
 							<div class="field">
 								<label for="message">Message <span aria-label="required">*</span></label>
 								<textarea name="message" id="message" rows="4" required></textarea>
 							</div>
+
 						</div>
 
 						<ul class="actions">
@@ -173,43 +175,44 @@
 					const form = document.getElementById('contact-form');
 					const result = document.getElementById('form-result');
 					const emailInput = document.getElementById('email');
-					const emailError = document.getElementById('email-error');
+					const emailErr = document.getElementById('email-error');
 					const submitBtn = form.querySelector('input[type="submit"]');
 
-					// Simple but robust e-mail regex (covers 99% of real addresses)
+					// -----------------------------------------------------------------
+					// 1. Client-side “quick guard” – only valid-looking e-mails
+					// -----------------------------------------------------------------
 					const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-					// Real-time validation (optional but nice UX)
+					const setEmailError = (msg) => {
+						emailErr.textContent = msg;
+						emailErr.style.display = 'block';
+						emailInput.setAttribute('aria-invalid', 'true');
+					};
+					const clearEmailError = () => {
+						emailErr.textContent = '';
+						emailErr.style.display = 'none';
+						emailInput.removeAttribute('aria-invalid');
+					};
+
 					emailInput.addEventListener('input', () => {
-						if (emailInput.validity.typeMismatch || !emailRegex.test(emailInput.value)) {
-							emailError.style.display = 'block';
-							emailInput.setAttribute('aria-invalid', 'true');
-						} else {
-							emailError.style.display = 'none';
-							emailInput.removeAttribute('aria-invalid');
-						}
+						if (emailInput.value.trim() === '') return clearEmailError();
+						emailRegex.test(emailInput.value) ? clearEmailError() : setEmailError('Please enter a valid e-mail address.');
 					});
 
+					// -----------------------------------------------------------------
+					// 2. Form submit – let Formspree do the **real** validation
+					// -----------------------------------------------------------------
 					form.addEventListener('submit', async function (e) {
 						e.preventDefault();
+						clearEmailError();
+						result.style.display = 'none';
 
-						// ---- 1. Client-side checks ----
-						let hasError = false;
-
-						// Reset previous visual cues
-						emailError.style.display = 'none';
-						emailInput.removeAttribute('aria-invalid');
-
-						// Validate e-mail again (in case someone disables JS validation)
+						// Quick client guard (prevents obvious junk)
 						if (!emailRegex.test(emailInput.value.trim())) {
-							emailError.style.display = 'block';
-							emailInput.setAttribute('aria-invalid', 'true');
-							hasError = true;
+							setEmailError('Please enter a valid e-mail address.');
+							return;
 						}
 
-						if (hasError) return;   // stop submission
-
-						// ---- 2. Disable button & send ----
 						submitBtn.disabled = true;
 
 						try {
@@ -219,25 +222,33 @@
 								headers: { 'Accept': 'application/json' }
 							});
 
+							// Formspree ALWAYS returns JSON when Accept: application/json
+							const data = await response.json();
+
 							if (response.ok) {
+								// SUCCESS
 								result.style.color = '#2ecc71';
 								result.textContent = 'Thank you! Your message was sent.';
 								form.reset();
 							} else {
-								// Formspree returns 400 for validation errors (e.g. spam)
-								const data = await response.json();
-								throw new Error(data.error || 'Server error');
+								// BACKEND VALIDATION FAILED → show Formspree’s message
+								const errMsg = data.error || 'Something went wrong. Please try again.';
+								result.style.color = '#e74c3c';
+								result.textContent = errMsg;
+
+								// If the error is about the e-mail field, highlight it
+								if (errMsg.toLowerCase().includes('email')) {
+									setEmailError(errMsg);
+								}
 							}
-						} catch (err) {
+						} catch (networkErr) {
 							result.style.color = '#e74c3c';
-							result.textContent = err.message.includes('spam')
-								? 'Message blocked as spam. Try again or contact me directly.'
-								: 'Oops! Something went wrong. Please try again.';
-							console.error(err);
+							result.textContent = 'Network error – check your connection and try again.';
+							console.error(networkErr);
 						} finally {
 							result.style.display = 'block';
 							submitBtn.disabled = false;
-							setTimeout(() => { result.style.display = 'none'; }, 5000);
+							setTimeout(() => { result.style.display = 'none'; }, 6000);
 						}
 					});
 				</script>
