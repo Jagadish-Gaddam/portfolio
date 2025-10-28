@@ -7,11 +7,37 @@
 <html>
 <head>
 	<script src="https://www.google.com/recaptcha/api.js"></script>
+
 	<script>
-		function onSubmit() {
-            document.getElementById("contact-form").submit()
+		function validateEmail(email) {
+			// ✅ Stronger email regex pattern than just "@something"
+			const re = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+			return re.test(email);
+		}
+
+		function validateForm(event) {
+			event.preventDefault(); // stop normal submission
+
+			const emailInput = document.getElementById('email');
+			const email = emailInput.value.trim();
+
+			if (!validateEmail(email)) {
+				alert('Please enter a valid email address (e.g. name@example.com)');
+				emailInput.focus();
+				return false; // don't continue
+			}
+
+			// ✅ Email is valid — now trigger your reCAPTCHA and onSubmit logic
+			grecaptcha.execute();
+			return true;
+		}
+
+		// ✅ Called by reCAPTCHA after success
+		function onSubmit(token) {
+			document.getElementById('contact-form').submit();
 		}
 	</script>
+
 	<title>Gaddam Jagadish Portfolio</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
