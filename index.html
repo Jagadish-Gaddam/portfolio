@@ -159,6 +159,9 @@
 								<label for="message">Message <span aria-label="required">*</span></label>
 								<textarea name="message" id="message" rows="4" required></textarea>
 							</div>
+
+							<!-- 1. Secret key as hidden field (recommended) -->
+							<input type="hidden" name="_secret" value="6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU" />
 						</div>
 
 						<ul class="actions">
@@ -168,7 +171,7 @@
 					</form>
 
 					<div id="form-result" role="alert" style="display:none;"></div>
-					
+
 					<script>
 						const form = document.getElementById('contact-form');
 						const result = document.getElementById('form-result');
@@ -211,12 +214,12 @@
 									method: 'POST',
 									body: new FormData(form),
 									headers: {
-										'Accept': 'application/json',
-										// Optional: you can also send the key as a header
-										'X-Formspree-Secret': '6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU'
+										'Accept': 'application/json'
+										// No X-Formspree-Secret header – we use the hidden _secret field
 									}
 								});
 
+								// This line will only run if the request reached Formspree
 								const data = await resp.json();
 
 								if (resp.ok) {
@@ -224,15 +227,15 @@
 									result.textContent = 'Thank you! Your message was sent.';
 									form.reset();
 								} else {
-									const msg = data.error || 'Unknown error';
+									const msg = data.error || 'Submission failed';
 									result.style.color = '#e74c3c';
 									result.textContent = msg;
 									if (msg.toLowerCase().includes('email')) setEmailError(msg);
 								}
 							} catch (err) {
+								console.error('Fetch failed:', err);
 								result.style.color = '#e74c3c';
-								result.textContent = 'Network error – try again later.';
-								console.error(err);
+								result.textContent = 'Network error – check your connection or try again later.';
 							} finally {
 								result.style.display = 'block';
 								submitBtn.disabled = false;
