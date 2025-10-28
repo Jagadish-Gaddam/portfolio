@@ -145,7 +145,7 @@
 					<form id="contact-form" action="https://formspree.io/f/movkzpee" method="POST" novalidate>
 						<div class="fields">
 							<div class="field half">
-								<label for="name">Name <span aria-label="required">*</span></label>
+								<label for="name">Name <span aria-label="required">*</span></spam></label>
 								<input type="text" name="name" id="name" required />
 							</div>
 
@@ -160,7 +160,10 @@
 								<textarea name="message" id="message" rows="4" required></textarea>
 							</div>
 
-							<!-- 1. Secret key as hidden field (recommended) -->
+							<!-- reCAPTCHA v3 token will be injected here -->
+							<input type="hidden" name="g-recaptcha-response" id="recaptcha-token" />
+
+							<!-- Your Formspree secret key (required for AJAX) -->
 							<input type="hidden" name="_secret" value="6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU" />
 						</div>
 
@@ -172,15 +175,73 @@
 
 					<div id="form-result" role="alert" style="display:none;"></div>
 
+					<!-- Load reCAPTCHA v3 script -->
+					<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU"></script>
+
 					<script>
 						const form = document.getElementById('contact-form');
 						const result = document.getElementById('form-result');
 						const emailInput = document.getElementById('email');
 						const emailErr = document.getElementById('email-error');
 						const submitBtn = form.querySelector('input[type="submit"]');
+						const tokenField = document.getElementById('recaptcha-token');
 
 						const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+						// === 1. Get your SITE KEY from Formspree dashboard ===
+                        const SITE_KEY = '6LfM9_ErAAAAACQ-AsrlMekupQwWMBEdKmsQkhTU';
+
+						// === 2. Load reCAPTCHA and get token on submit ===
+						form.addEventListener('submit', async e => {
+							e.preventDefault();
+							clearEmailError();
+							result.style.display = 'none';
+
+							if (!emailRegex.test(emailInput.value.trim())) {
+								setEmailError('Please enter a valid e-mail address.');
+								return;
+							}
+
+							submitBtn.disabled = true;
+							result.textContent = 'Verifying...';
+							result.style.color = '#3498db';
+							result.style.display = 'block';
+
+							try {
+								// Get reCAPTCHA token
+								const token = await grecaptcha.execute(SITE_KEY, { action: 'submit' });
+								tokenField.value = token;
+
+								// Send to Formspree
+								const resp = await fetch(form.action, {
+									method: 'POST',
+									body: new FormData(form),
+									headers: { 'Accept': 'application/json' }
+								});
+
+								const data = await resp.json();
+
+								if (resp.ok) {
+									result.style.color = '#2ecc71';
+									result.textContent = 'Thank you! Your message was sent.';
+									form.reset();
+								} else {
+									const msg = data.error || 'Submission failed';
+									result.style.color = '#e74c3c';
+									result.textContent = msg;
+									if (msg.toLowerCase().includes('email')) setEmailError(msg);
+								}
+							} catch (err) {
+								console.error(err);
+								result.style.color = '#e74c3c';
+								result.textContent = 'Network error – try again later.';
+							} finally {
+								submitBtn.disabled = false;
+								setTimeout(() => result.style.display = 'none', 6000);
+							}
+						});
+
+						// === Email validation UI ===
 						const setEmailError = msg => {
 							emailErr.textContent = msg;
 							emailErr.style.display = 'block';
@@ -195,52 +256,6 @@
 						emailInput.addEventListener('input', () => {
 							if (!emailInput.value) return clearEmailError();
 							emailRegex.test(emailInput.value) ? clearEmailError() : setEmailError('Invalid e-mail');
-						});
-
-						form.addEventListener('submit', async e => {
-							e.preventDefault();
-							clearEmailError();
-							result.style.display = 'none';
-
-							if (!emailRegex.test(emailInput.value.trim())) {
-								setEmailError('Please enter a valid e-mail address.');
-								return;
-							}
-
-							submitBtn.disabled = true;
-
-							try {
-								const resp = await fetch(form.action, {
-									method: 'POST',
-									body: new FormData(form),
-									headers: {
-										'Accept': 'application/json'
-										// No X-Formspree-Secret header – we use the hidden _secret field
-									}
-								});
-
-								// This line will only run if the request reached Formspree
-								const data = await resp.json();
-
-								if (resp.ok) {
-									result.style.color = '#2ecc71';
-									result.textContent = 'Thank you! Your message was sent.';
-									form.reset();
-								} else {
-									const msg = data.error || 'Submission failed';
-									result.style.color = '#e74c3c';
-									result.textContent = msg;
-									if (msg.toLowerCase().includes('email')) setEmailError(msg);
-								}
-							} catch (err) {
-								console.error('Fetch failed:', err);
-								result.style.color = '#e74c3c';
-								result.textContent = 'Network error – check your connection or try again later.';
-							} finally {
-								result.style.display = 'block';
-								submitBtn.disabled = false;
-								setTimeout(() => result.style.display = 'none', 6000);
-							}
 						});
 					</script>
 
